@@ -1,0 +1,37 @@
+env
+venv
+.env
+.venv
+
+# python bytecode files
+*.pyc
+__pycache__/
+
+.mypy_cache/
+.coverage
+.pytest_cache/
+
+# setuptools files
+*.egg-info/
+
+# testing files
+.tox/
+.coverage
+
+# Editor
+.idea
+.vscode
+
+# PyEnv
+.python-version
+
+# OS Dependent files
+.DS_Store
+
+local_sessions/
+
+app/static/*
+!app/static/.gitignore
+
+static/*
+!static/oppi-logo.png

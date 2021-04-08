@@ -1,0 +1,10 @@
+{% extends "layouts/app.html" %}
+{% block title %}
+<title>{{ title }}</title>
+{% endblock %}
+{% block meta %}
+    <meta property="og:title" content="{{ meta_data.title }}" />
+    <meta property="og:description" content="description" />
+    <meta property="og:type" content="type" />
+{% endblock %}
+

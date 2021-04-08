@@ -1,0 +1,99 @@
+# based on: https://dev.to/jonatasbaldin/a-recipe-for-poetry-and-circleci-1bj6
+version: 2.1
+
+orbs:
+  aws-cli: circleci/aws-cli@0.1.19
+
+jobs:
+
+  # Building and testing the project
+  # Useful when a PR is open, for example
+  build-and-test:
+    # Our environment, Python 3.8
+    docker:
+      - image: circleci/python:3.8
+
+    environment:
+      SECRET_KEY: ABSAAKSJCAKSJDHA
+      APP_HOST: 0.0.0.0
+      APP_PORT: 5000
+      DB_USER: root
+      DB_PASSWORD:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_NAME: oppi_test
+      AWS_KEY: ""
+      AWS_SECRET: ""
+      STORAGE_S3_REGION: ""
+      STORAGE_S3_BUCKET_NAME: ""
+      SESSION_TYPE: filesystem
+      SESSION_FILE_DIR: local_sessions
+      SESSION_FILE_THRESHOLD: 1000
+
+    # The steps for our build-and-test
+    steps:
+      # Get the code
+      - checkout
+
+      # Cache can be tricky at first, but this means
+      # Please, restore my cache (what is actually on the cache will be defined later)
+      # if the text key `deps-{{ checksum "poetry.lock" }}` changes (and it WILL change everytime poetry.lock is updated since we rely on its checksum)
+      # and poetry.lock is updated every time we add a new dependency to our project
+      - restore_cache:
+          keys:
+            - deps-{{ checksum "poetry.lock" }}
+
+      # Let's install the dependencies
+      - run:
+          name: Install Dependencies
+          command: |
+            poetry install
+
+      # Save's the specified path as a cache. This is the path Poetry uses to install the dependencies
+      # So if you don't install anything new, this folder won't change and the cache will be effective
+      - save_cache:
+          key: deps-{{ checksum "poetry.lock" }}
+          paths:
+            - /home/circleci/.cache/pypoetry/virtualenvs
+
+#      # Another step, run flake8
+#      - run:
+#          name: Run flake8
+#          command: |
+#            poetry run flake8 .
+
+      # Last step, runs our tests ommiting the dependencies path (so we don't take their coverage into account)
+      # And send our coverage somewhere, in this case, coveralls
+      - run:
+          name: Run Pytest
+          command: |
+            poetry run pytest
+
+  deploy-dev:
+    executor: aws-cli/default
+
+    steps:
+      - aws-cli/setup:
+          profile-name: default
+
+      - run:
+          name: Execute deplopy to server
+          command: |
+            aws ssm send-command --instance-ids "${INSTANCE_ID_DEV}" --document-name "AWS-RunShellScript" --comment "Demo run shell script on Linux Instance" --parameters commands="${DEPLOY_CMD}" --output text --query "Command.CommandId"
+
+
+# In the workflows section, we specify when we want to run the jobs defined
+workflows:
+  version: 2
+
+  # The build-and-test we will run EVERYTIME a piece of code changes
+  build-and-test-workflow:
+    jobs:
+      - build-and-test
+
+  deploy_dev:
+    jobs:
+      - deploy-dev:
+          filters:
+            branches:
+              only: /^master/

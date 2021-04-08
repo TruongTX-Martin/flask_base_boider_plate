@@ -1,0 +1,244 @@
+openapi: 3.0.0
+info:
+  title: v1-mvp
+  contact:
+    name: API Support
+    url: http://www.example.com/support
+    email: support@example.com
+  description: v1-mvp
+  version: '1.0'
+servers:
+  - url: 'http://localhost:5000'
+paths:
+  '/api/v1/auth/signup':
+    post:
+      description: 'Signup'
+      operationId: 'signup'
+      tags:
+        - auth
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: email
+                password:
+                  type: string
+                  description: password
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessToken'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: error message
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: error message
+  '/api/v1/auth/signin':
+    post:
+      description: 'signin'
+      operationId: 'signin'
+      tags:
+        - auth
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: email
+                password:
+                  type: string
+                  description: password
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessToken'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: error message
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: error message
+  '/api/v1/me':
+    get:
+      description: 'Get user information'
+      operationId: 'get-me'
+      tags:
+        - me
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: error message
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: error message
+    post:
+      description: 'Update user information'
+      operationId: 'update-me'
+      tags:
+        - me
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: email
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: error message
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: error message
+
+components:
+  schemas:
+    AccessToken:
+      description: OAuth2 Responce
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: access token
+        tokenType:
+          type: string
+          description: "bearer"
+    Status:
+      description: Response status
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+    List:
+      type: object
+      properties:
+        totalCount:
+          type: integer
+          format: int32
+          example: 123
+        offset:
+          type: integer
+          format: int32
+          example: 20
+        limit:
+          type: integer
+          format: int32
+          example: 10
+    Image:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier representing a specific image
+        originalFileName:
+          type: string
+          description: original name of file.
+        url:
+          type: string
+          description: Url of image
+    User:
+      title: User
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+    Users:
+      allOf:
+        - $ref: '#/components/schemas/List'
+        - required:
+            - list
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/User'

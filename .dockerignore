@@ -1,0 +1,11 @@
+.git
+.gitignore
+README.md
+local_sessions
+.idea
+.pytest_cache
+.tests
+Makefile
+docker-compose.yml
+docker-compose.production.yml
+.env*
