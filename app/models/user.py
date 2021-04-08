@@ -18,6 +18,7 @@ class User(UserMixin, db.Model):
 
     id = db.Column('id', db.BigInteger, primary_key=True)
     email = db.Column('email', db.String(255), nullable=False)
+    name = db.Column('name', db.String(255), nullable=False)
     password = db.Column('password', db.String(255), nullable=False)
     anonymous_id = db.Column('anonymous_id', db.String(255), nullable=True)
     created_at = db.Column('created_at',

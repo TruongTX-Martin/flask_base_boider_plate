@@ -7,4 +7,5 @@ class User(BaseEntity):
             "anonymousId": self._model.anonymous_id,
             "id": self._model.id,
             "email": self._model.email,
+            "name": self._model.name,
         }

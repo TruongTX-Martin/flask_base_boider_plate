@@ -22,9 +22,14 @@ class UserService(object):
         return self.user_repository.find(id_)
 
     def create_user(self, fields: Dict) -> Optional[User]:
+        email = fields['email']
+        name = ''
+        if email.find('@') != -1:
+            name = email.split('@')[0] 
         user_fields = {
             'email': fields['email'],
             'password': fields['password'],
+            'name': name
         }
         check_user = self.user_repository.get_user_by_email(fields['email'])
         if check_user is not None:

@@ -42,5 +42,4 @@ def signup(user_service: UserService):
     }
 
     user = user_service.create_user(input_data)
-    print('Sign up create user:', user.__dict__);
     return User(user).response()
