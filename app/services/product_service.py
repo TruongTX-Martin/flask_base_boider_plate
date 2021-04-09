@@ -19,4 +19,7 @@ class ProductService(object):
         
     def delete_product(self, product: Product):
         return self.product_repository.delete(product)
+    
+    def get_all_product(self):
+        return self.product_repository.all()
         

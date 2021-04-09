@@ -4,7 +4,7 @@ from injector  import inject
 from app.exceptions import (NotFoundError, LogicError)
 from app.services import ProductService
 from ..schemas import CreateProductSchema
-from ..responses import (Product, Status)
+from ..responses import (Product, Status, Products)
 
 
 app = Blueprint('api.product', __name__)
@@ -15,7 +15,9 @@ app = Blueprint('api.product', __name__)
 @inject
 @token_required
 def get_product(product_service: ProductService):
-    print('Get product list')
+    list =  product_service.get_all_product();
+    return Products(models=list).response(), 200
+    
 
 # create product
 @app.route('', methods=['POST'])
