@@ -1,3 +1,5 @@
+from app.services import product_service
+from app.repositories import product_repository
 from flask import Flask
 from flask_cors import CORS
 from flask_injector import FlaskInjector, request
@@ -6,9 +8,9 @@ from flask_session import Session
 from ..config import Config
 from ..database import db, init_db
 from ..helpers import SessionHelper
-from ..repositories import FileRepository, UserRepository
+from ..repositories import FileRepository, UserRepository, ProductRepository
 from ..response_error_handler import ResponseErrorHandler
-from ..services import StorageService, UserService
+from ..services import StorageService, UserService, ProductService
 from ..services.storage import S3, Local
 from ..views.api.routes import build_routes as api_build_routes
 from ..views.frontend.routes import build_routes as frontend_build_routes
@@ -36,10 +38,13 @@ def create_app(config_mode: str = 'development') -> Flask:
 
 def _bind(binder):
     user_repository = UserRepository(database=db)
-
+    user_service = UserService(user_repository=user_repository)
+    
     file_repository = FileRepository(database=db)
 
-    user_service = UserService(user_repository=user_repository)
+    
+    product_repository = ProductRepository(database=db)
+    product_service = ProductService(product_repository=product_repository)
 
     local = Local()
     s3 = S3()
@@ -64,7 +69,19 @@ def _bind(binder):
         to=file_repository,
         scope=request,
     )
+    
+    binder.bind(
+        ProductRepository,
+        to=product_repository,
+        scope=request,
+    )
 
+    binder.bind(
+        ProductService,
+        to=product_service,
+        scope=request,
+    )
+    
     binder.bind(
         StorageService,
         to=storage_service,

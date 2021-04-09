@@ -76,8 +76,6 @@ class UserService(object):
 
         session.clear()
         session['user_id'] = user.id
-        
-        print('user login :', user.__dict__);
         return user
 
     def load_logged_in_user_to_request(self, user_id: str):

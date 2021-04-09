@@ -19,7 +19,6 @@ def request_validate(*params):
     def example_route(level):
         ...
     """
-    print('start validate data');
     def validate_params(func):
         @wraps(func)
         def wrapper(*args, **kwargs):

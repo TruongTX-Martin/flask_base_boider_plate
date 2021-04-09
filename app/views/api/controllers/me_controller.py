@@ -14,4 +14,5 @@ app = Blueprint('api.me', __name__)
 @token_required
 def me():
     user = g.user
+    print('global user:', user.__dict__)
     return User(model=user).response(), 200
