@@ -6,4 +6,4 @@ from .user import User
 from .product import Product
 from .products  import Products
 
-__all__ = ['User', 'Error', 'Status', 'Token', 'Image', 'BaseList', 'Products']
+__all__ = ['User', 'Error', 'Status', 'Token', 'Image', 'BaseList', 'Products','Product']

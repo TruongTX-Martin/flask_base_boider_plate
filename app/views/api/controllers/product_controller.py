@@ -1,3 +1,4 @@
+from app.repositories.product_repository import ProductRepository
 from flask import Blueprint, request
 from ....middlewares.authenticate import token_required
 from injector  import inject
@@ -14,9 +15,34 @@ app = Blueprint('api.product', __name__)
 @app.route('', methods=['GET'])
 @inject
 @token_required
-def get_product(product_service: ProductService):
-    list =  product_service.get_all_product();
-    return Products(models=list).response(), 200
+def get_product(product_service: ProductService, product_repository: ProductRepository):
+    search = request.args.get('search')
+    offset = request.args.get('offset')
+    limit = request.args.get('limit')
+    order = request.args.get('order')
+    direction = request.args.get('direction', default='asc')
+    filter_dict = {}
+    if search:
+        filter_dict['search'] = search
+    if offset:
+        filter_dict['offset'] = offset
+    if limit:
+        filter_dict['limit'] = limit
+    if order:
+        filter_dict['order'] = order
+    print('Produts filter_dict:', filter_dict);
+    print('Produts search:', search);
+    print('Produts offset:', offset);
+    products = product_repository.get_by_filter(filter_dict=filter_dict,
+                                          offset=offset,
+                                          limit=limit,
+                                          order=order,
+                                          direction=direction)
+    print('Produts result:', products);
+    total_count = product_repository.count_by_filter(filter_dict=filter_dict)
+    return Products(models=products,total_count=total_count,
+                 offset=offset,
+                 limit=limit).response()
     
 
 # create product

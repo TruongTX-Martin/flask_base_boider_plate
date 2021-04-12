@@ -58,9 +58,12 @@ class BaseRepository(object):
                       direction: str = "asc") -> List[db.Model]:
         if filter_dict is None:
             filter_dict = {}
-        query = self.model_class.query.order_by(text(order + " " + direction))
+        query = self.build_order_query(self.model_class.query, order,
+                                       direction)
+        print('order by query result:', query);
+        query = self.build_filter_query(query, filter_dict)
 
-        return query.filter_by(**filter_dict).offset(offset).limit(limit).all()
+        return query.offset(offset).limit(limit).all()
 
     def count_by_filter(self, filter_dict: Dict = None) -> int:
         if filter_dict is None:
@@ -68,3 +71,26 @@ class BaseRepository(object):
         query = self.model_class.query
 
         return query.filter_by(**filter_dict).count()
+    
+    def build_order_query(self,
+                          query,
+                          order: str = "id",
+                          direction: str = "asc"):
+        columns = self.model_class.__table__.columns.keys()
+        # if order not in columns, override order as id
+        if order not in columns:
+            order = 'id'
+
+        # if direction not in [asc, desc], override direction
+        if direction not in ['asc', 'desc']:
+            direction = 'asc'
+
+        return query.order_by(
+            text(self.model_class.__tablename__ + ".\"" + order + "\" " +
+                 direction))
+        
+    def build_filter_query(self, query, filter_dict: Dict = None):
+        if filter_dict is None:
+            filter_dict = {}
+
+        return query.filter_by(**filter_dict)
