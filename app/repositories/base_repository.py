@@ -58,18 +58,16 @@ class BaseRepository(object):
                       direction: str = "asc") -> List[db.Model]:
         if filter_dict is None:
             filter_dict = {}
+
         query = self.build_order_query(self.model_class.query, order,
                                        direction)
-        print('order by query result:', query);
         query = self.build_filter_query(query, filter_dict)
-
         return query.offset(offset).limit(limit).all()
 
     def count_by_filter(self, filter_dict: Dict = None) -> int:
         if filter_dict is None:
             filter_dict = {}
         query = self.model_class.query
-
         return query.filter_by(**filter_dict).count()
     
     def build_order_query(self,
@@ -92,5 +90,5 @@ class BaseRepository(object):
     def build_filter_query(self, query, filter_dict: Dict = None):
         if filter_dict is None:
             filter_dict = {}
-
+            
         return query.filter_by(**filter_dict)

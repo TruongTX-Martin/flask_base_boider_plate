@@ -17,28 +17,23 @@ app = Blueprint('api.product', __name__)
 @token_required
 def get_product(product_service: ProductService, product_repository: ProductRepository):
     search = request.args.get('search')
-    offset = request.args.get('offset')
-    limit = request.args.get('limit')
-    order = request.args.get('order')
+    offset = request.args.get('offset', default=0, type=int)
+    limit = request.args.get('limit', default=10, type=int)
+    order = request.args.get('order', default='id')
     direction = request.args.get('direction', default='asc')
     filter_dict = {}
+    print('Show parameter offset:', offset)
     if search:
         filter_dict['search'] = search
-    if offset:
-        filter_dict['offset'] = offset
-    if limit:
-        filter_dict['limit'] = limit
     if order:
         filter_dict['order'] = order
-    print('Produts filter_dict:', filter_dict);
-    print('Produts search:', search);
-    print('Produts offset:', offset);
+    filter_dict['offset'] = offset
+    filter_dict['limit'] = limit
     products = product_repository.get_by_filter(filter_dict=filter_dict,
                                           offset=offset,
                                           limit=limit,
-                                          order=order,
+                                          order=filter_dict['order'],
                                           direction=direction)
-    print('Produts result:', products);
     total_count = product_repository.count_by_filter(filter_dict=filter_dict)
     return Products(models=products,total_count=total_count,
                  offset=offset,
