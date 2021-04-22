@@ -59,7 +59,7 @@ def seed():
     Seeder(db=db).execute()
 
     db.session.commit()
-    print('Done.')
+    print('Done Seed.')
 
 
 @manager.command

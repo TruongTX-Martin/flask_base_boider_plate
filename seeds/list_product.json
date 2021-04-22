@@ -1,0 +1,23 @@
+[
+    {
+        "name":"May tinh1",
+        "description":"May tinh1",
+        "image":"image1,image2,image3",
+        "old_price": 100000,
+        "new_price":80000
+    },
+    {
+        "name":"May tinh2",
+        "description":"May tinh2",
+        "image":"image1,image2,image3",
+        "old_price": 100000,
+        "new_price":80000
+    },
+    {
+        "name":"May tinh3",
+        "description":"May tinh3",
+        "image":"image1,image2,image3",
+        "old_price": 100000,
+        "new_price":80000
+    }
+]
