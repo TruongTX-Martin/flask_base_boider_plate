@@ -22,7 +22,6 @@ def get_product(product_service: ProductService, product_repository: ProductRepo
     order = request.args.get('order', default='id')
     direction = request.args.get('direction', default='asc')
     filter_dict = {}
-    print('Show parameter offset:', offset)
     if search:
         filter_dict['search'] = search
     if order:
