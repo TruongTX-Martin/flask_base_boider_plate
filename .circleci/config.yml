@@ -99,25 +99,25 @@ workflows:
   version: 2
 
   # The build-and-test we will run EVERYTIME a piece of code changes
-  build-and-test-workflow:
-    jobs:
-      - build-and-test:
-          filters:
-            branches:
-              ignore:
-                - release/dev
-                - release/stg
-                - release/production
+  # build-and-test-workflow:
+  #   jobs:
+  #     - build-and-test:
+  #         filters:
+  #           branches:
+  #             ignore:
+  #               - release/dev
+  #               - release/stg
+  #               - release/production
 
   deploy-development:
     jobs:
       - aws-ecr/build-and-push-image:
           name: "build-and-push-image"
-          repo: kaizen-web-backend
+          repo: student-app
           tag: "${CIRCLE_SHA1}"
           dockerfile: Dockerfile
           context:
-            - kaizen-dev
+            - flask-base
           filters:
             branches:
               only:
@@ -125,25 +125,25 @@ workflows:
       - aws-ecs/deploy-service-update:
           name: deploy-service-update-app
           context:
-            - kaizen-dev
+            - flask-base
           requires:
             - build-and-push-image
-          family: kaizen-development-app-task
-          service-name: kaizen-development-app-service
-          cluster-name: kaizen-development-cluster
-          container-image-name-updates: container=app,image-and-tag=${AWS_ECR_ACCOUNT_URL}/kaizen-web-backend:${CIRCLE_SHA1}
+          family: student-task
+          service-name: StudentService
+          cluster-name: student-development-cluster
+          container-image-name-updates: container=app,image-and-tag=${AWS_ECR_ACCOUNT_URL}/student-app:${CIRCLE_SHA1}
           filters:
             branches:
               only:
                 - release/dev
-      - slack-status:
-          context:
-            - kaizen-dev
-          environment: development
-          tier: app
-          filters:
-            branches:
-              only:
-                - release/dev
-          requires:
-            - deploy-service-update-app
+      # - slack-status:
+      #     context:
+      #       - flask-base
+      #     environment: development
+      #     tier: app
+      #     filters:
+      #       branches:
+      #         only:
+      #           - release/dev
+      #     requires:
+      #       - deploy-service-update-app
