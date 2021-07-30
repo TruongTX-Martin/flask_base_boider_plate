@@ -46,6 +46,7 @@ def get_product(product_service: ProductService, product_repository: ProductRepo
 def create(product_service: ProductService):
     request_data = request.get_json()
     CreateProductSchema().load(request_data);
+    
     product = product_service.create_product(request_data)
     return Product(product).response();
     
