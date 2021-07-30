@@ -130,7 +130,7 @@ workflows:
             - build-and-push-image
           family: student-task
           service-name: student-service
-          cluster-name: kaizen-development-cluster 
+          cluster-name: student-cluster 
           container-image-name-updates: container=app,image-and-tag=${AWS_ECR_ACCOUNT_URL}/student-app:${CIRCLE_SHA1}
           filters:
             branches:
