@@ -9,5 +9,5 @@ class Product(BaseEntity):
             "image": self._model.image,
             "old_price": self._model.old_price,
             "new_price": self._model.new_price,
-            "update": "Test3"
+            "update": "Test4"
         }

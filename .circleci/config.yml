@@ -131,6 +131,7 @@ workflows:
           family: student-task
           service-name: student-service
           cluster-name: student-cluster 
+          # student-app : name of repository
           container-image-name-updates: container=app,image-and-tag=${AWS_ECR_ACCOUNT_URL}/student-app:${CIRCLE_SHA1}
           filters:
             branches:
